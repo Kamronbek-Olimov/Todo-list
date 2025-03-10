@@ -3,7 +3,7 @@ import { HiOutlineUser } from "react-icons/hi2"
 import { GoEye } from "react-icons/go"
 import { GoEyeClosed } from "react-icons/go"
 import { AiOutlineMail } from "react-icons/ai"
-import { useEffect, useRef, useState } from "react"
+import { useState } from "react"
 import { useRouter } from "next/router"
 export default function Login() {
   const [passwordHide, setPasswordHide] = useState(false)
@@ -17,12 +17,14 @@ export default function Login() {
     refresh.preventDefault()
     localStorage.getItem("user") ? setInvalid(false) : setInvalid(true)    
     if (JSON.parse(localStorage.getItem("user")) &&
-      JSON.parse(localStorage.getItem("user"))[0].username === username &&
-      JSON.parse(localStorage.getItem("user"))[0].password === password) {
+      JSON.parse(localStorage.getItem("user"))[0].username.toLowerCase() === username.toLowerCase() &&
+      JSON.parse(localStorage.getItem("user"))[0].password.toLowerCase() === password.toLowerCase()) {
       router.push("/")
     }else if(emailHide){
       localStorage.setItem("user", JSON.stringify([{username, email, password}]))
       router.push("/")
+    }else{
+      setInvalid(true)
     }
   }
   return (
