@@ -6,6 +6,42 @@ import { RiEditBoxLine } from "react-icons/ri";
 import { LuTrash2 } from "react-icons/lu";
 import { MdCheck } from "react-icons/md";
 export default function Home() {
+  const [list, setList] = useState([{
+    time: "08:00",
+    work: "Reding book",
+    done: true,
+    id: Math.floor(Math.random()*9999),
+  },
+  {
+    time: "08:00",
+    work: "Reding book",
+    done: true,
+    id: Math.floor(Math.random()*9999),
+  },
+  {
+    time: "08:00",
+    work: "Reding book",
+    done: true,
+    id: Math.floor(Math.random()*9999),
+  },
+  {
+    time: "08:00",
+    work: "Reding book",
+    done: true,
+    id: Math.floor(Math.random()*9999),
+  },
+  {
+    time: "08:00",
+    work: "Reding book",
+    done: true,
+    id: Math.floor(Math.random()*9999),
+  },
+  {
+    time: "08:00",
+    work: "Reding book",
+    done: true,
+    id: Math.floor(Math.random()*9999),
+  },])
   const [date, setDate] = useState(new Date())
   const router = useRouter();
   const [parseUser, setParseUser] = useState(null)
@@ -45,6 +81,12 @@ export default function Home() {
       reader.readAsDataURL(file);
     }
   }
+  const deleteFunction = (id) => {
+    const remList = list.filter((item)=>{
+      return item.id !== id
+    }) 
+    setList(remList)
+  }
   return (
     <>
       <Head>
@@ -83,19 +125,22 @@ export default function Home() {
           <div className="flex flex-col gap-y-4">
             <h3 className="font-rubik font-semibold text-[20px] leading-[100%] text-[#444444]">Today’s tasks</h3>
             <div style={{ scrollbarWidth: "none" }} className="max-h-[calc(100vh-332px)] flex flex-col gap-y-2 overflow-y-scroll">
-              {
-                Array(15).fill(null).map((_, key) => {
+              {list.map((item, key) => {
                   return (
                     <div key={key} className="flex items-center gap-x-3 px-3 py-2 border-[2px] border-[#D6D6D6] rounded-[20px]">
-                      <button className="w-5 h-5 border border-[#DFBD43]"><MdCheck /></button>
+                      <button onClick={()=>{
+                        const doneList = [...list]
+                        doneList[key] = {...item, done: !item.done}
+                        setList(doneList)                      
+                      }} className={item.done?"w-5 h-5 border border-[#DFBD43] bg-[#DFBD43]":"w-5 h-5 border border-[#DFBD43]"}>{item.done&&<MdCheck className="text-[#FFFFFF]"/>}</button>
                       <div className="w-full flex flex-col gap-y-3">
                         <div className="flex items-center justify-between">
-                          <p className="font-rubik font-normal text-[13px] leading-[100%] text-[#00000080]">08:00 AM</p>
+                          <p className="font-rubik font-normal text-[13px] leading-[100%] text-[#00000080]">{item.time} AM</p>
                           <RiEditBoxLine className="text-[20px] text-[#DFBD43]" />
                         </div>
                         <div className="flex items-center justify-between">
-                          <p className="font-rubik font-medium text-[16px] leading-[100%] text-[#00000080]">Reading book</p>
-                          <LuTrash2 className="font-semibold text-[20px] text-[#DFBD43]" />
+                          <p className="font-rubik font-medium text-[16px] leading-[100%] text-[#00000080]">{item.work}</p>
+                          <LuTrash2 onClick={()=>deleteFunction(item.id)} className="font-semibold text-[20px] text-[#DFBD43]" />
                         </div>
                       </div>
                     </div>
