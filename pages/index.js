@@ -42,6 +42,7 @@ export default function Home() {
     done: true,
     id: Math.floor(Math.random()*9999),
   },])
+  const [searchList, setSearchList] = useState([])  
   const [date, setDate] = useState(new Date())
   const router = useRouter();
   const [parseUser, setParseUser] = useState(null)
@@ -55,6 +56,7 @@ export default function Home() {
     return () => clearInterval(interval)
   }, [])
   useEffect(() => {
+    setSearchList(list)
     const storedUser = localStorage.getItem("user")
     if (storedUser) {
       try {
@@ -107,11 +109,11 @@ export default function Home() {
           <div className="flex flex-col gap-y-4">
             <div className="flex items-center justify-between">
               {
-                Array(7).fill(null).map((_, key) => {
+                weekDays.map((day, key) => {
                   return (
                     <div key={key} className="flex flex-col items-center gap-y-2">
                       <button className="bg-[#DFBD43] w-7 h-7 rounded-full font-rubik font-normal text-[13px] leading-[100%] text-[#FFFFFF]">{date.getDate() < 10 ? '0' + date.getDate() : date.getDate()}</button>
-                      <p className="font-rubik font-normal text-[12px] leading-[100%] text-[#DFBD43]">{weekDays[key]}</p>
+                      <p className="font-rubik font-normal text-[12px] leading-[100%] text-[#DFBD43]">{day}</p>
                     </div>
                   )
                 })
@@ -119,13 +121,19 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-x-3 px-4 py-3 border border-[#999999] rounded-[60px]">
               <IoIosSearch className="text-[24px] text-[#DFBD43]" />
-              <input type="text" placeholder="Search" className="bg-transparent w-full font-rubik font-normal text-[16px] leading-[100%] text-[#00000080] outline-none" />
+              <input onInput={(e)=>{
+                if(e.target.value.toLowerCase()){
+                  setSearchList(list.filter(item=>item.work.toLowerCase().includes(e.target.value.toLowerCase())))
+                }else{
+                  setSearchList(list)
+                }
+              }} type="text" placeholder="Search" className="bg-transparent w-full font-rubik font-normal text-[16px] leading-[100%] text-[#00000080] outline-none" />
             </div>
           </div>
           <div className="flex flex-col gap-y-4">
             <h3 className="font-rubik font-semibold text-[20px] leading-[100%] text-[#444444]">Today’s tasks</h3>
             <div style={{ scrollbarWidth: "none" }} className="max-h-[calc(100vh-332px)] flex flex-col gap-y-2 overflow-y-scroll">
-              {list.map((item, key) => {
+              {searchList.map((item, key) => {
                   return (
                     <div key={key} className="flex items-center gap-x-3 px-3 py-2 border-[2px] border-[#D6D6D6] rounded-[20px]">
                       <button onClick={()=>{
